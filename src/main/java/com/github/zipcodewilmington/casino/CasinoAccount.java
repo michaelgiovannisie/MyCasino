@@ -45,5 +45,4 @@ public class CasinoAccount {
         accountBalance += amount;
     }
 
-
 }
