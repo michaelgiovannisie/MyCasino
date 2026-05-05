@@ -1,65 +1,76 @@
 package com.github.zipcodewilmington.casino.games.numberguess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import com.github.zipcodewilmington.casino.GameInterface;
+import com.github.zipcodewilmington.casino.PlayerInterface;
 
 public class NumberGuessGame implements GameInterface {
 
     private int number;
-    private int guesses;
-    private static final int MAX_GUESSES = 7;
+    private int turn;
+    private static final int maxTurn = 8;
+    List<PlayerInterface> players;
+    private boolean gameWon;
 
     public NumberGuessGame() {
         Random random = new Random();
         this.number = random.nextInt(100) + 1;
-        this.guesses = 0;
+        this.turn = 0;
+        gameWon = false;
+        players = new ArrayList<>();
     }
 
-    public void play(Scanner scanner) {
+    public void run() {
+        if(players.isEmpty()) {
+                System.out.println("At least 1 player needed.");
+                return;
+            }
         printGameStart();
-        while (guesses < MAX_GUESSES) {
-
-                System.out.println("Enter your guess: ");
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number.");
-                    scanner.next();
-                    continue;
-                }
-
-                int guess = scanner.nextInt();
-                if (guess < 1 || guess > 100) {
-                    System.out.println("Please enter a number between 1 and 100.");
-                    continue;
-                }
-
-                this.guesses++;
-
-                if (guess == this.number) {
-                    System.out.println("Congratulations! You guessed the number " + this.number + " in " + this.guesses + " guesses!");
+        while (turn < maxTurn && !gameWon) {
+            for(PlayerInterface player : players) {
+                int guess = player.play();
+                turn++;
+                if(guess == number){
+                    System.out.println("Congratulation you have won!");
+                    gameWon = true;
                     break;
                 }
-
-                else if (guess < this.number) {
-                    System.out.println("Too low! You have " + (MAX_GUESSES - this.guesses) + " guesses left.");
+                if(guess < number) {
+                    System.out.println("Too Low!");
+                } else {
+                    System.out.println("Too High!");
                 }
-
-                else if (guess > this.number) {
-                    System.out.println("Too high! You have " + (MAX_GUESSES - this.guesses) + " guesses left.");
-                }
-
-                if (guesses >= MAX_GUESSES) {
-                    System.out.printf("Sorry, you've run out of guesses! The number was " + this.number + ".");
-                    System.out.println("The secret number was: " + this.number);
+                if (turn >= maxTurn) {
                     break;
                 }
+            }
+        }
+        if(gameWon == false) {
+            System.out.println("Game Over.");
+            System.out.println("The number was " + number);
         }
     }
 
     public void printGameStart() {
         System.out.println("Welcome to the Number Guess Game! A number between 1 and 100 is randomly chosen. Can you guess it?");
-        System.out.println("You have " + MAX_GUESSES + " guesses. Good luck!");
+        System.out.println("You have " + maxTurn/players.size() + " guesses. Good luck!");
+    }
+
+
+
+    @Override
+    public void add(PlayerInterface player) {
+        if(players.size() < 2) {
+            players.add(player);
+        }
+    }
+
+    @Override
+    public void remove(PlayerInterface player) {
+        players.remove(player);
     }
 
 }
