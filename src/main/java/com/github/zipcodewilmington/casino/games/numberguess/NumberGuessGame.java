@@ -12,7 +12,7 @@ public class NumberGuessGame implements GameInterface {
     private int number;
     private int turn;
     private static final int maxTurn = 8;
-    List<PlayerInterface> players;
+    private List<PlayerInterface> players;
     private boolean gameWon;
 
     public NumberGuessGame() {
@@ -31,10 +31,11 @@ public class NumberGuessGame implements GameInterface {
         printGameStart();
         while (turn < maxTurn && !gameWon) {
             for(PlayerInterface player : players) {
+                System.out.println("Player: " + player.getArcadeAccount().getAccountName() + ", it's your turn.");
                 int guess = player.play();
                 turn++;
                 if(guess == number){
-                    System.out.println("Congratulation you have won!");
+                    System.out.println("Congratulation " + player.getArcadeAccount().getAccountName() + " wins!");
                     gameWon = true;
                     break;
                 }
@@ -48,7 +49,7 @@ public class NumberGuessGame implements GameInterface {
                 }
             }
         }
-        if(gameWon == false) {
+        if(!gameWon) {
             System.out.println("Game Over.");
             System.out.println("The number was " + number);
         }
@@ -58,8 +59,6 @@ public class NumberGuessGame implements GameInterface {
         System.out.println("Welcome to the Number Guess Game! A number between 1 and 100 is randomly chosen. Can you guess it?");
         System.out.println("You have " + maxTurn/players.size() + " guesses. Good luck!");
     }
-
-
 
     @Override
     public void add(PlayerInterface player) {

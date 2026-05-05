@@ -29,6 +29,21 @@ public class CasinoAccount {
         return accountBalance;
     }
 
+    public boolean hasEnoughBalance(double amount) {
+        return accountBalance >= amount;
+    }
+
+    public void withdraw(double amount) {
+        if (hasEnoughBalance(amount)) {
+            accountBalance -= amount;
+        } else {
+            System.out.println("Insufficient Balance.");
+        }
+    }
+
+    public void deposit(double amount) {
+        accountBalance += amount;
+    }
 
 
 }

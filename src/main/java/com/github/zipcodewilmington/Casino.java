@@ -1,5 +1,8 @@
 package com.github.zipcodewilmington;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.zipcodewilmington.casino.CasinoAccount;
 import com.github.zipcodewilmington.casino.CasinoAccountManager;
 import com.github.zipcodewilmington.casino.GameInterface;
@@ -19,6 +22,9 @@ public class Casino implements Runnable {
 
     @Override
     public void run() {
+        IOConsole integer = new IOConsole();
+        int numberOfPlayers;
+        int playerCount;
         String arcadeDashBoardInput;
         CasinoAccountManager casinoAccountManager = new CasinoAccountManager();
         do {
@@ -33,7 +39,31 @@ public class Casino implements Runnable {
                     if (gameSelectionInput.equals("SLOTS")) {
                         play(new SlotsGame(), new SlotsPlayer());
                     } else if (gameSelectionInput.equals("NUMBERGUESS")) {
-                        play(new NumberGuessGame(), new NumberGuessPlayer());
+                        numberOfPlayers = integer.getIntegerInput("How many players? (1 or 2)");
+                        List <CasinoAccount> players = new ArrayList<>();
+                        for(int i = 0; i < numberOfPlayers; i++) {
+                            accountName = console.getStringInput("Enter your account name:");
+                            accountPassword = console.getStringInput("Enter your account password:");
+                            CasinoAccount casinoAccount = casinoAccountManager.getAccount(accountName, accountPassword);
+                            if (casinoAccount == null) {
+                                System.out.println("Invalid login. Try again.");
+                                i--;
+                                continue;
+                            }
+                            if (players.contains(casinoAccount)) {
+                                System.out.println("Player is already logged in.");
+                                i--;
+                                continue;
+                            }
+                            players.add(casinoAccount);
+                        }
+                        NumberGuessGame game = new NumberGuessGame();
+                        for(CasinoAccount player: players) {
+                            NumberGuessPlayer account = new NumberGuessPlayer(player);
+                            game.add(account);
+                        }
+                        game.run();
+
                     } else {
                         // TODO - implement better exception handling
                         String errorMessage = "[ %s ] is an invalid game selection";
