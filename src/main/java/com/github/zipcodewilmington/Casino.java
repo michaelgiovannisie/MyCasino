@@ -37,7 +37,7 @@ public class Casino implements Runnable {
                 if (isValidLogin) {
                     String gameSelectionInput = getGameSelectionInput().toUpperCase();
                     if (gameSelectionInput.equals("SLOTS")) {
-                        play(new SlotsGame(), new SlotsPlayer());
+                        play(new SlotsGame(), new SlotsPlayer(casinoAccount));
                     } else if (gameSelectionInput.equals("NUMBERGUESS")) {
                         numberOfPlayers = integer.getIntegerInput("How many players? (1 or 2)");
                         List <CasinoAccount> players = new ArrayList<>();

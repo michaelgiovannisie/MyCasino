@@ -11,7 +11,7 @@ public class NumberGuessGame implements GameInterface {
 
     private int number;
     private int turn;
-    private static final int maxTurn = 8;
+    private static final int maxTurn = 6;
     private List<PlayerInterface> players;
     private boolean gameWon;
 
