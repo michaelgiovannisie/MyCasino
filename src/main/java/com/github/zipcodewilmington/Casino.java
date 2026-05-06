@@ -18,13 +18,12 @@ import com.github.zipcodewilmington.utils.IOConsole;
  * Created by leon on 7/21/2020.
  */
 public class Casino implements Runnable {
-    private final IOConsole console = new IOConsole(AnsiColor.BLUE);
+    private final IOConsole console = new IOConsole(AnsiColor.GREEN);
 
     @Override
     public void run() {
         IOConsole integer = new IOConsole();
         int numberOfPlayers;
-        int playerCount;
         String arcadeDashBoardInput;
         CasinoAccountManager casinoAccountManager = new CasinoAccountManager();
         do {
@@ -41,26 +40,27 @@ public class Casino implements Runnable {
                     } else if (gameSelectionInput.equals("NUMBERGUESS")) {
                         numberOfPlayers = integer.getIntegerInput("How many players? (1 or 2)");
                         List <CasinoAccount> players = new ArrayList<>();
-                        for(int i = 0; i < numberOfPlayers; i++) {
+                        players.add(casinoAccount);
+                        for(int i = 1; i < numberOfPlayers; i++) {
                             accountName = console.getStringInput("Enter your account name:");
                             accountPassword = console.getStringInput("Enter your account password:");
-                            CasinoAccount casinoAccount = casinoAccountManager.getAccount(accountName, accountPassword);
-                            if (casinoAccount == null) {
+                            CasinoAccount playerAccount = casinoAccountManager.getAccount(accountName, accountPassword);
+                            if (playerAccount == null) {
                                 System.out.println("Invalid login. Try again.");
                                 i--;
                                 continue;
                             }
-                            if (players.contains(casinoAccount)) {
+                            if (players.contains(playerAccount)) {
                                 System.out.println("Player is already logged in.");
                                 i--;
                                 continue;
                             }
-                            players.add(casinoAccount);
+                            players.add(playerAccount);
                         }
                         NumberGuessGame game = new NumberGuessGame();
                         for(CasinoAccount player: players) {
-                            NumberGuessPlayer account = new NumberGuessPlayer(player);
-                            game.add(account);
+                            NumberGuessPlayer numberGuessPlayer = new NumberGuessPlayer(player);
+                            game.add(numberGuessPlayer);
                         }
                         game.run();
 
@@ -86,7 +86,7 @@ public class Casino implements Runnable {
 
     private String getArcadeDashboardInput() {
         return console.getStringInput(new StringBuilder()
-                .append("Welcome to the Arcade Dashboard!")
+                .append("Welcome to the Go Big or Go Home Casino!")
                 .append("\nFrom here, you can select any of the following options:")
                 .append("\n\t[ create-account ], [ select-game ]")
                 .toString());

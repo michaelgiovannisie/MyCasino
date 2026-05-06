@@ -80,46 +80,60 @@ public class SlotsGame implements GameInterface {
 
     public void run() {
         printGameStart();
-        multiplier = 0;
-        PlayerInterface player = players.get(0);
-        CasinoAccount account = player.getArcadeAccount();
-        System.out.println("Your current balance: " + account.getAccountBalance());
-        IOConsole money = new IOConsole();
         while(true) {
-            bet = money.getIntegerInput("Enter your bet: ");
-            if (bet <= 0) {
-                System.out.println("Bet must be greater than 0.");
-                continue;
+            multiplier = 0;
+            PlayerInterface player = players.get(0);
+            CasinoAccount account = player.getArcadeAccount();
+            System.out.println("Your current balance: " + account.getAccountBalance());
+            IOConsole input = new IOConsole();
+            while(true) {
+                bet = input.getIntegerInput("Enter your bet: ");
+                if (bet <= 0) {
+                    System.out.println("Bet must be greater than 0.");
+                    continue;
+                }
+                if (bet > account.getAccountBalance()) {
+                    System.out.println("Insufficient balance.");
+                    continue;
+                }
+                break; 
             }
-            if (bet > account.getAccountBalance()) {
-                System.out.println("Insufficient balance.");
-                continue;
+            account.withdraw(bet);
+            String spin1 = logos.get(random.nextInt(logos.size()));
+            String spin2 = logos.get(random.nextInt(logos.size()));
+            String spin3 = logos.get(random.nextInt(logos.size()));
+            System.out.println("["+ spin1 + "] | [" + spin2 + "] | [" + spin3 + "]");
+            if(spin1.equals(spin2) && spin2.equals(spin3)){
+                multiplier = threeMatchPayout.getOrDefault(spin1, 0.0);
+            } else if (spin1.equals(spin2)) {
+                multiplier = twoMatchPayout.getOrDefault(spin1, 0.0);
             }
-            break; 
-        }
-        account.withdraw(bet);
-        String spin1 = logos.get(random.nextInt(logos.size()));
-        String spin2 = logos.get(random.nextInt(logos.size()));
-        String spin3 = logos.get(random.nextInt(logos.size()));
-        System.out.println("["+ spin1 + "] | [" + spin2 + "] | [" + spin3 + "]");
-        if(spin1.equals(spin2) && spin2.equals(spin3)){
-            multiplier = threeMatchPayout.getOrDefault(spin1, 0.0);
-        } else if (spin1.equals(spin2)) {
-            multiplier = twoMatchPayout.getOrDefault(spin1, 0.0);
-        }
-        else if (spin2.equals(spin3)) {
-            multiplier = twoMatchPayout.getOrDefault(spin2, 0.0);
-        }
-        else if (spin1.equals(spin3)) {
-            multiplier = twoMatchPayout.getOrDefault(spin1, 0.0);
-        }
+            else if (spin2.equals(spin3)) {
+                multiplier = twoMatchPayout.getOrDefault(spin2, 0.0);
+            }
+            else if (spin1.equals(spin3)) {
+                multiplier = twoMatchPayout.getOrDefault(spin1, 0.0);
+            }
 
-        if(multiplier > 0) {
-            double winnings = bet * multiplier;
-            System.out.println("Congratulations you have won: " + winnings);
-            account.deposit(winnings);
-        } else {
-            System.out.println("You didn't win anything :(");
+            if(multiplier > 0) {
+                double winnings = bet * multiplier;
+                System.out.println("Congratulations you have won: " + winnings);
+                account.deposit(winnings);
+            } else {
+                System.out.println("You didn't win anything :(");
+            }
+            String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
+            
+            while (true) {
+            String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
+
+            if (playAgain.equalsIgnoreCase("N") || playAgain.equalsIgnoreCase("NO")) {
+                return;
+            } else if (playAgain.equalsIgnoreCase("Y") || playAgain.equalsIgnoreCase("YES")) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please enter Y or N.");
+            }
         }
     }
 

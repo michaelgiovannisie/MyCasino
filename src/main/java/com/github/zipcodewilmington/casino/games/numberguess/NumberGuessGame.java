@@ -28,9 +28,12 @@ public class NumberGuessGame implements GameInterface {
                 System.out.println("At least 1 player needed.");
                 return;
             }
+        int startIndex = new Random().nextInt(players.size());
         printGameStart();
         while (turn < maxTurn && !gameWon) {
-            for(PlayerInterface player : players) {
+            for(int i = 0; i < players.size(); i++) {
+                int actualIndex = (startIndex + i) % players.size();
+                PlayerInterface player = players.get(actualIndex);
                 System.out.println("Player: " + player.getArcadeAccount().getAccountName() + ", it's your turn.");
                 int guess = player.play();
                 turn++;
@@ -57,7 +60,7 @@ public class NumberGuessGame implements GameInterface {
 
     public void printGameStart() {
         System.out.println("Welcome to the Number Guess Game! A number between 1 and 100 is randomly chosen. Can you guess it?");
-        System.out.println("You have " + maxTurn/players.size() + " guesses. Good luck!");
+        System.out.println("You have " + maxTurn + " total turns. Good luck!");
     }
 
     @Override
