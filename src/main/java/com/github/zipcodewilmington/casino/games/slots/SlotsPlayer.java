@@ -1,9 +1,5 @@
 package com.github.zipcodewilmington.casino.games.slots;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.github.zipcodewilmington.casino.CasinoAccount;
 import com.github.zipcodewilmington.casino.PlayerInterface;
 
