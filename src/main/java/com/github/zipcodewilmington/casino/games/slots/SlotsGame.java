@@ -122,17 +122,22 @@ public class SlotsGame implements GameInterface {
             } else {
                 System.out.println("You didn't win anything :(");
             }
-            String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
+
+            if(player.getArcadeAccount().getAccountBalance() <= 0) {
+                System.out.println("You are out of money! Game over.");
+                return;
+            }
             
             while (true) {
-            String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
+                String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
 
-            if (playAgain.equalsIgnoreCase("N") || playAgain.equalsIgnoreCase("NO")) {
-                return;
-            } else if (playAgain.equalsIgnoreCase("Y") || playAgain.equalsIgnoreCase("YES")) {
-                break;
-            } else {
-                System.out.println("Invalid input. Please enter Y or N.");
+                if (playAgain.equalsIgnoreCase("N") || playAgain.equalsIgnoreCase("NO")) {
+                    return;
+                } else if (playAgain.equalsIgnoreCase("Y") || playAgain.equalsIgnoreCase("YES")) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter Y or N.");
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.github.zipcodewilmington.casino.GameInterface;
 import com.github.zipcodewilmington.casino.PlayerInterface;
+import com.github.zipcodewilmington.utils.IOConsole;
 
 public class NumberGuessGame implements GameInterface {
 
@@ -14,9 +15,10 @@ public class NumberGuessGame implements GameInterface {
     private static final int maxTurn = 6;
     private List<PlayerInterface> players;
     private boolean gameWon;
+    Random random = new Random();
+    IOConsole input = new IOConsole();
 
     public NumberGuessGame() {
-        Random random = new Random();
         this.number = random.nextInt(100) + 1;
         this.turn = 0;
         gameWon = false;
@@ -28,33 +30,50 @@ public class NumberGuessGame implements GameInterface {
                 System.out.println("At least 1 player needed.");
                 return;
             }
-        int startIndex = new Random().nextInt(players.size());
-        printGameStart();
-        while (turn < maxTurn && !gameWon) {
-            for(int i = 0; i < players.size(); i++) {
-                int actualIndex = (startIndex + i) % players.size();
-                PlayerInterface player = players.get(actualIndex);
-                System.out.println("Player: " + player.getArcadeAccount().getAccountName() + ", it's your turn.");
-                int guess = player.play();
-                turn++;
-                if(guess == number){
-                    System.out.println("Congratulation " + player.getArcadeAccount().getAccountName() + " wins!");
-                    gameWon = true;
-                    break;
-                }
-                if(guess < number) {
-                    System.out.println("Too Low!");
-                } else {
-                    System.out.println("Too High!");
-                }
-                if (turn >= maxTurn) {
-                    break;
+        while(true) {
+            turn = 0;
+            number = random.nextInt(100) + 1;
+            gameWon = false;
+            int startIndex = random.nextInt(players.size());
+            printGameStart();
+            while (turn < maxTurn && !gameWon) {
+                for(int i = 0; i < players.size(); i++) {
+                    int actualIndex = (startIndex + i) % players.size();
+                    PlayerInterface player = players.get(actualIndex);
+                    System.out.println("Player: " + player.getArcadeAccount().getAccountName() + ", it's your turn.");
+                    int guess = player.play();
+                    turn++;
+                    if(guess == number){
+                        System.out.println("Congratulation " + player.getArcadeAccount().getAccountName() + " wins!");
+                        gameWon = true;
+                        break;
+                    }
+                    if(guess < number) {
+                        System.out.println("Too Low!");
+                    } else {
+                        System.out.println("Too High!");
+                    }
+                    if (turn >= maxTurn) {
+                        break;
+                    }
                 }
             }
-        }
-        if(!gameWon) {
-            System.out.println("Game Over.");
-            System.out.println("The number was " + number);
+            if(!gameWon) {
+                System.out.println("Game Over.");
+                System.out.println("The number was " + number);
+            }
+
+            while (true) {
+                String playAgain = input.getStringInput("Do you want to play again? (Y/N)");
+
+                if (playAgain.equalsIgnoreCase("N") || playAgain.equalsIgnoreCase("NO")) {
+                    return;
+                } else if (playAgain.equalsIgnoreCase("Y") || playAgain.equalsIgnoreCase("YES")) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter Y or N.");
+                }
+            }
         }
     }
 
