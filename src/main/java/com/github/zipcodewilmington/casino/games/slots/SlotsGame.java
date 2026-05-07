@@ -17,7 +17,7 @@ import com.github.zipcodewilmington.utils.IOConsole;
 public class SlotsGame implements GameInterface { 
     private int bet;
     private double multiplier;
-    Random random = new Random();
+    private Random random;
     private List<PlayerInterface> players;
     private boolean gameLoop;
     private List<String> logos;
@@ -28,6 +28,7 @@ public class SlotsGame implements GameInterface {
         gameLoop = false;
         players = new ArrayList<>();
         logos = new ArrayList<>();
+        random  = new Random();
         logos.add("Watermelon");
         logos.add("Watermelon");
         logos.add("Watermelon");
@@ -79,6 +80,10 @@ public class SlotsGame implements GameInterface {
     }
 
     public void run() {
+        if (players.isEmpty()) {
+            System.out.println("You don't have enough balance.");
+            return;
+        }
         printGameStart();
         while(true) {
             multiplier = 0;
@@ -148,7 +153,9 @@ public class SlotsGame implements GameInterface {
 
     @Override
     public void add(PlayerInterface player) {
-        players.add(player);
+        if(player.getArcadeAccount().getAccountBalance() > 0) {
+            players.add(player);
+        }
     }
 
     @Override

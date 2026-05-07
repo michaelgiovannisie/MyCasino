@@ -36,10 +36,10 @@ public class Casino implements Runnable {
                 if (isValidLogin) {
                     String gameSelectionInput = getGameSelectionInput().toUpperCase();
                     if (gameSelectionInput.equals("SLOTS")) {
-                                if(casinoAccount.getAccountBalance() <= 0) {
-                        System.out.println("Insufficient balance to play. Your balance is " + casinoAccount.getAccountBalance());
-                        continue;
-                    }
+                    //     if(casinoAccount.getAccountBalance() <= 0) {
+                    //     System.out.println("Insufficient balance to play. Your balance is " + casinoAccount.getAccountBalance());
+                    //     continue;
+                    // }
                         play(new SlotsGame(), new SlotsPlayer(casinoAccount));
                     } else if (gameSelectionInput.equals("NUMBERGUESS")) {
                         numberOfPlayers = integer.getIntegerInput("How many players? (1 or 2)");

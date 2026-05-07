@@ -15,14 +15,16 @@ public class NumberGuessGame implements GameInterface {
     private static final int maxTurn = 6;
     private List<PlayerInterface> players;
     private boolean gameWon;
-    Random random = new Random();
-    IOConsole input = new IOConsole();
+    private Random random;
+    private IOConsole input;
 
     public NumberGuessGame() {
         this.number = random.nextInt(100) + 1;
         this.turn = 0;
         gameWon = false;
         players = new ArrayList<>();
+        random  = new Random();
+        input = new IOConsole();
     }
 
     public void run() {
