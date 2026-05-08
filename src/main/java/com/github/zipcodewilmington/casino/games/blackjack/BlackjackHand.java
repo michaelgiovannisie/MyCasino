@@ -39,20 +39,25 @@ public class BlackjackHand {
         return hand.toString();
     }
 
-    public int getHandValue() {
+    private BlackjackHandScore calculateScore() {
         int total = 0;
         int ace = 0;
-        for(Card card : hand) {
+        for (Card card : hand) {
             total += handValue.get(card.getRank());
-            if(card.getRank() == Rank.ACE) {
+            if (card.getRank() == Rank.ACE) {
                 ace++;
             }
         }
-        while(total > 21 && ace >0) {
-            total -=10;
+        while (total > 21 && ace > 0) {
+            total -= 10;
             ace--;
         }
-        return total;
+        boolean soft = ace > 0;
+        return new BlackjackHandScore(total, soft);
+    }
+
+    public int getHandValue() {
+        return calculateScore().getValue();
     }
 
     public void clearHand() {
@@ -73,6 +78,10 @@ public class BlackjackHand {
 
     public int getFirstCardValue() {
         return handValue.get(hand.get(0).getRank()); 
+    }
+
+    public boolean isSoft() {
+        return calculateScore().isSoft();
     }
 
 }
