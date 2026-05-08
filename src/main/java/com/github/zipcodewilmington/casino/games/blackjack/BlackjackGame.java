@@ -18,6 +18,7 @@ public class BlackjackGame implements GameInterface{
     private boolean playerTurnOver;
     private boolean roundOver;
     private double winnings;
+    private boolean canDoubleDown;
 
     public BlackjackGame() {
         players = new ArrayList<>();
@@ -37,6 +38,7 @@ public class BlackjackGame implements GameInterface{
             playerTurnOver = false;
             roundOver = false;
             winnings = 0;
+            canDoubleDown = true;
             BlackjackPlayer player = (BlackjackPlayer) players.get(0);
             CasinoAccount account = player.getArcadeAccount();
             System.out.println("Your current balance: " + account.getAccountBalance());
@@ -63,12 +65,14 @@ public class BlackjackGame implements GameInterface{
             System.out.println("You: " + player.getHand().getHandValue() + " | " + player.getHand().toString());
 
             if(player.getHand().hasBlackjack() && !dealer.getHand().hasBlackjack()) {
-                winnings = bet + bet * 1.2;
+                winnings = bet + (bet * 1.2);
                 account.deposit(winnings);
-                System.out.println("You won " + winnings + " !");
+                System.out.println("BLACKJACK! You won " + winnings + " !");
                 System.out.println("Your current balance: " + player.getArcadeAccount().getAccountBalance());
                 roundOver = true;
             } else if(!player.getHand().hasBlackjack() && dealer.getHand().hasBlackjack()) {
+                System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
+                    System.out.println("You: " + player.getHand().getHandValue() + " | " + player.getHand().toString());
                 System.out.println("You lost.");
                 roundOver = true;
             } else if(player.getHand().hasBlackjack() && dealer.getHand().hasBlackjack()) {
@@ -79,8 +83,9 @@ public class BlackjackGame implements GameInterface{
 
             if(!roundOver) {
                 while (!playerTurnOver && !player.getHand().isBust()) {
-                    String move = input.getStringInput("Hit/Stand?");
+                    String move = input.getStringInput("Hit | Stand | Double down");
                     if (move.toUpperCase().equals("HIT") || move.toUpperCase().equals("H")) {
+                        canDoubleDown = false;
                         player.getHand().addCard(deck.drawCard());
                         System.out.println("Dealer: " + dealer.getHand().getFirstCardValue() + " | " + dealer.getHand().showFirstCard().toString());
                         System.out.println("You: " + player.getHand().getHandValue() + " | " + player.getHand().toString());
@@ -88,8 +93,26 @@ public class BlackjackGame implements GameInterface{
                             System.out.println("Bust! You lose.");
                             roundOver = true;
                             playerTurnOver = true;
+                        } else if (player.getHand().getHandValue() == 21) {
+                            playerTurnOver = true;
                         }
                     } else if (move.toUpperCase().equals("STAND") || move.toUpperCase().equals("S")) {
+                        playerTurnOver = true;
+                        break;
+                    } else if((move.toUpperCase().equals("DOUBLE DOWN") || move.toUpperCase().equals("DD") || move.toUpperCase().equals("D")) && canDoubleDown) {
+                        if (player.getArcadeAccount().getAccountBalance() < bet) {
+                            System.out.println("Not enough balance to double down.");
+                            continue;
+                        }
+                        account.withdraw(bet);
+                        bet *= 2;
+                        player.getHand().addCard(deck.drawCard());
+                        System.out.println("Dealer: " + dealer.getHand().getFirstCardValue() + " | " + dealer.getHand().showFirstCard().toString());
+                        System.out.println("You: " + player.getHand().getHandValue() + " | " + player.getHand().toString());
+                        if(player.getHand().isBust()) {
+                            roundOver = true;
+                            System.out.println("Bust! You lose.");
+                        }
                         playerTurnOver = true;
                         break;
                     } else {
@@ -121,6 +144,8 @@ public class BlackjackGame implements GameInterface{
                     System.out.println("Your current balance: " + player.getArcadeAccount().getAccountBalance());
                     roundOver = true;
                 } else if (player.getHand().getHandValue() < dealer.getHand().getHandValue()) {
+                    System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
+                    System.out.println("You: " + player.getHand().getHandValue() + " | " + player.getHand().toString());
                     System.out.println("You lost.");
                     roundOver = true;
                 } else {

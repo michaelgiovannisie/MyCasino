@@ -20,5 +20,4 @@ public class BlackjackPlayer implements PlayerInterface {
     public BlackjackHand getHand() {
         return hand;
     }
-
 }

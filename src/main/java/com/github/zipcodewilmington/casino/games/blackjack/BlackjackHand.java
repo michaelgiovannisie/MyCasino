@@ -35,8 +35,13 @@ public class BlackjackHand {
         hand.add(card);
     }
 
+    @Override
     public String toString() {
-        return hand.toString();
+        StringBuilder cards = new StringBuilder();
+        for (Card card : hand) {
+            cards.append(card).append("  ");
+        }
+        return cards.toString();
     }
 
     private BlackjackHandScore calculateScore() {

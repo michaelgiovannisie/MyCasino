@@ -7,6 +7,8 @@ import com.github.zipcodewilmington.casino.CasinoAccount;
 import com.github.zipcodewilmington.casino.CasinoAccountManager;
 import com.github.zipcodewilmington.casino.GameInterface;
 import com.github.zipcodewilmington.casino.PlayerInterface;
+import com.github.zipcodewilmington.casino.games.blackjack.BlackjackGame;
+import com.github.zipcodewilmington.casino.games.blackjack.BlackjackPlayer;
 import com.github.zipcodewilmington.casino.games.numberguess.NumberGuessGame;
 import com.github.zipcodewilmington.casino.games.numberguess.NumberGuessPlayer;
 import com.github.zipcodewilmington.casino.games.slots.SlotsGame;
@@ -65,7 +67,7 @@ public class Casino implements Runnable {
                         game.run();
 
                     } else if (gameSelectionInput.equals("BLACKJACK")) {
-                        play(new SlotsGame(), new SlotsPlayer(casinoAccount));
+                        play(new BlackjackGame(), new BlackjackPlayer(casinoAccount));
                     } else {
                         // TODO - implement better exception handling
                         String errorMessage = "[ %s ] is an invalid game selection";
