@@ -36,10 +36,6 @@ public class Casino implements Runnable {
                 if (isValidLogin) {
                     String gameSelectionInput = getGameSelectionInput().toUpperCase();
                     if (gameSelectionInput.equals("SLOTS")) {
-                    //     if(casinoAccount.getAccountBalance() <= 0) {
-                    //     System.out.println("Insufficient balance to play. Your balance is " + casinoAccount.getAccountBalance());
-                    //     continue;
-                    // }
                         play(new SlotsGame(), new SlotsPlayer(casinoAccount));
                     } else if (gameSelectionInput.equals("NUMBERGUESS")) {
                         numberOfPlayers = integer.getIntegerInput("How many players? (1 or 2)");
@@ -68,6 +64,8 @@ public class Casino implements Runnable {
                         }
                         game.run();
 
+                    } else if (gameSelectionInput.equals("BLACKJACK")) {
+                        play(new SlotsGame(), new SlotsPlayer(casinoAccount));
                     } else {
                         // TODO - implement better exception handling
                         String errorMessage = "[ %s ] is an invalid game selection";
@@ -100,7 +98,7 @@ public class Casino implements Runnable {
         return console.getStringInput(new StringBuilder()
                 .append("Welcome to the Game Selection Dashboard!")
                 .append("\nFrom here, you can select any of the following options:")
-                .append("\n\t[ SLOTS ], [ NUMBERGUESS ]")
+                .append("\n\t[ SLOTS ], [ NUMBERGUESS ], [BLACKJACK]")
                 .toString());
     }
 
