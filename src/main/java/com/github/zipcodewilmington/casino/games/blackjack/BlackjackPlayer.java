@@ -1,15 +1,18 @@
 package com.github.zipcodewilmington.casino.games.blackjack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.zipcodewilmington.casino.CasinoAccount;
 import com.github.zipcodewilmington.casino.PlayerInterface;
 
 public class BlackjackPlayer implements PlayerInterface {
     private CasinoAccount casinoAccount;
-    private BlackjackHand hand;
+    private List<BlackjackHandState> handStates;
 
     public BlackjackPlayer(CasinoAccount casinoAccount) {
         this.casinoAccount = casinoAccount;
-        hand = new BlackjackHand();
+        handStates = new ArrayList<>();
     }
 
     @Override
@@ -17,7 +20,7 @@ public class BlackjackPlayer implements PlayerInterface {
         return casinoAccount;
     }
 
-    public BlackjackHand getHand() {
-        return hand;
+    public List<BlackjackHandState> getHandStates() {
+        return handStates;
     }
 }

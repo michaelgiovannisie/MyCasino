@@ -89,4 +89,15 @@ public class BlackjackHand {
         return calculateScore().isSoft();
     }
 
+    public boolean canSplit() {
+        if(hand.size() == 2){
+            return handValue.get(hand.get(0).getRank()).equals(handValue.get(hand.get(1).getRank())); 
+        }
+        return false;
+    }
+
+    public Card removeCard(int index) {
+        return hand.remove(index);
+    }
+
 }
