@@ -116,7 +116,7 @@ public class BlackjackGame implements GameInterface{
                 roundOver = true;
             }
 
-            if(currentHand.canSplit() && account.getAccountBalance() >= bet) {
+            if(!roundOver && (currentHand.canSplit() && account.getAccountBalance() >= bet)) {
                 while(true) {
                     String askSplit = input.getStringInput("Do you want to split? (Y/N)");
                     if (askSplit.equalsIgnoreCase("N") || askSplit.equalsIgnoreCase("NO")) {
@@ -142,11 +142,15 @@ public class BlackjackGame implements GameInterface{
                 for (int i = 0; i < player.getHandStates().size(); i++) {
                     BlackjackHandState state = player.getHandStates().get(i);
                     BlackjackHand playerHand = state.getHand();
-                    System.out.println("\nPlaying Hand " + (i + 1) + ": " + playerHand.getHandValue() + " | " + playerHand);
+                    if (player.getHandStates().size() > 1) {
+                        System.out.println("\nDealer: " + dealer.getHand().getFirstCardValue() + " | " + dealer.getHand().showFirstCard().toString());
+                        System.out.println("Playing Hand " + (i + 1) + ": "
+                            + playerHand.getHandValue() + " | " + playerHand);
+                    }
                     playerTurnOver = false;
                     canDoubleDown = true;
                     while (!playerTurnOver && !state.getHand().isBust()) {
-                        String move = input.getStringInput("Hit | Stand | Double down");
+                        String move = input.getStringInput((player.getHandStates().size() > 1 ? "Hand " + (i + 1) + " - " : "") + "Hit | Stand | Double down");
                         if (move.toUpperCase().equals("HIT") || move.toUpperCase().equals("H")) {
                             canDoubleDown = false;
                             playerHand.addCard(shoe.drawCard());
