@@ -43,7 +43,7 @@ public class BlackjackGame implements GameInterface{
             hasInsurance = false;
             BlackjackPlayer player = (BlackjackPlayer) players.get(0);
             CasinoAccount account = player.getArcadeAccount();
-            System.out.println("Your current balance: " + account.getAccountBalance());
+            System.out.println("\nYour current balance: " + account.getAccountBalance());
             while(true) {
                 bet = input.getIntegerInput("Enter your bet: ");
                 if (bet <= 0) {
@@ -67,7 +67,7 @@ public class BlackjackGame implements GameInterface{
             currentHand.addCard(shoe.drawCard());
             dealer.getHand().addCard(shoe.drawCard());
             dealer.getHand().addCard(shoe.drawCard());
-            System.out.println("Dealer: " + dealer.getHand().getFirstCardValue() + " | " + dealer.getHand().showFirstCard().toString());
+            System.out.println("\nDealer: " + dealer.getHand().getFirstCardValue() + " | " + dealer.getHand().showFirstCard().toString());
             System.out.println("You: " + currentHand.getHandValue() + " | " + currentHand.toString());
             if(dealer.getHand().getFirstCardValue() == 11 && player.getArcadeAccount().getAccountBalance() > 0) {
                 while(true) {
@@ -94,11 +94,13 @@ public class BlackjackGame implements GameInterface{
             if(currentHand.hasBlackjack() && !dealer.getHand().hasBlackjack()) {
                 winnings = currentState.getBet() + (currentState.getBet() * 1.2);
                 account.deposit(winnings);
+                System.out.println("\nDealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
+                System.out.println("You: " + currentHand.getHandValue() + " | " + currentHand.toString());
                 System.out.println("BLACKJACK! You won " + winnings + " !");
                 System.out.println("Your current balance: " + player.getArcadeAccount().getAccountBalance());
                 roundOver = true;
             } else if(!currentHand.hasBlackjack() && dealer.getHand().hasBlackjack()) {
-                System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
+                System.out.println("\nDealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
                 System.out.println("You: " + currentHand.getHandValue() + " | " + currentHand.toString());
                 if(hasInsurance) {
                     insuranceBet *= 3;
@@ -116,7 +118,7 @@ public class BlackjackGame implements GameInterface{
 
             if(currentHand.canSplit() && account.getAccountBalance() >= bet) {
                 while(true) {
-                    String askSplit = input.getStringInput("Do you want to split?");
+                    String askSplit = input.getStringInput("Do you want to split? (Y/N)");
                     if (askSplit.equalsIgnoreCase("N") || askSplit.equalsIgnoreCase("NO")) {
                         break;
                     } else if (askSplit.equalsIgnoreCase("Y") || askSplit.equalsIgnoreCase("YES")) {
@@ -127,8 +129,8 @@ public class BlackjackGame implements GameInterface{
                         secondHand.addCard(currentHand.removeCard(1));
                         currentHand.addCard(shoe.drawCard());
                         secondHand.addCard(shoe.drawCard());
-                        System.err.println(currentHand.toString());
-                        System.err.println(secondHand.toString());
+                        System.out.println("Hand 1: " + currentHand.getHandValue() + " | " + currentHand);
+                        System.out.println("Hand 2: " + secondHand.getHandValue() + " | " + secondHand);
                         break;
                     } else {
                         System.out.println("Invalid input. Please enter Y or N.");
@@ -137,8 +139,10 @@ public class BlackjackGame implements GameInterface{
             }
 
             if(!roundOver) {
-                for(BlackjackHandState state : player.getHandStates()) {
+                for (int i = 0; i < player.getHandStates().size(); i++) {
+                    BlackjackHandState state = player.getHandStates().get(i);
                     BlackjackHand playerHand = state.getHand();
+                    System.out.println("\nPlaying Hand " + (i + 1) + ": " + playerHand.getHandValue() + " | " + playerHand);
                     playerTurnOver = false;
                     canDoubleDown = true;
                     while (!playerTurnOver && !state.getHand().isBust()) {
@@ -180,20 +184,36 @@ public class BlackjackGame implements GameInterface{
                 }
             }
 
+            boolean allHandsBusted = true;
+            for (BlackjackHandState state : player.getHandStates()) {
+                if (!state.getHand().isBust()) {
+                    allHandsBusted = false;
+                    break;
+                }
+            }
+            if (allHandsBusted) {
+                roundOver = true;
+            }
+
             if(!roundOver){
                 while(dealer.getHand().getHandValue() < 17 || (dealer.getHand().getHandValue() == 17 && dealer.getHand().isSoft())) {
                     dealer.getHand().addCard(shoe.drawCard());
                     System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
-                    System.out.println("You: " + currentHand.getHandValue() + " | " + currentHand.toString());
+                    for (BlackjackHandState state : player.getHandStates()) {
+                        BlackjackHand hand = state.getHand();
+                        System.out.println("You: " + hand.getHandValue() + " | " + hand.toString());
+                    }
                 }
             }
 
             if (!roundOver) {
+                System.out.println("\nFINAL RESULT");
+                System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
                 for (BlackjackHandState state : player.getHandStates()) {
                     BlackjackHand hand = state.getHand();
+                    System.out.println("You: " + hand.getHandValue() + " | " + hand.toString());
                     int handBet = state.getBet();
                     if (hand.isBust()) {
-                        System.out.println("Hand busted. You lose.");
                         continue;
                     }
                     if (dealer.getHand().isBust()) {
