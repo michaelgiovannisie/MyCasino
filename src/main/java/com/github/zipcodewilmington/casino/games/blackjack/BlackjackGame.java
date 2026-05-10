@@ -121,7 +121,7 @@ public class BlackjackGame implements GameInterface{
                         break;
                     } else if (askSplit.equalsIgnoreCase("Y") || askSplit.equalsIgnoreCase("YES")) {
                         account.withdraw(bet);
-                        BlackjackHandState secondState = new BlackjackHandState(bet);
+                        BlackjackHandState secondState = new BlackjackHandState(currentState.getBet());
                         player.getHandStates().add(secondState);
                         BlackjackHand secondHand = secondState.getHand();
                         secondHand.addCard(currentHand.removeCard(1));
@@ -181,7 +181,7 @@ public class BlackjackGame implements GameInterface{
             }
 
             if(!roundOver){
-                while(dealer.getHand().getHandValue() < 18 || (dealer.getHand().getHandValue() == 18 && dealer.getHand().isSoft())) {
+                while(dealer.getHand().getHandValue() < 17 || (dealer.getHand().getHandValue() == 17 && dealer.getHand().isSoft())) {
                     dealer.getHand().addCard(shoe.drawCard());
                     System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
                     System.out.println("You: " + currentHand.getHandValue() + " | " + currentHand.toString());
@@ -196,8 +196,6 @@ public class BlackjackGame implements GameInterface{
                         System.out.println("Hand busted. You lose.");
                         continue;
                     }
-                    System.out.println("Dealer: " + dealer.getHand().getHandValue() + " | " + dealer.getHand().toString());
-                    System.out.println("You: " + hand.getHandValue() + " | " + hand.toString());
                     if (dealer.getHand().isBust()) {
                         winnings = handBet * 2;
                         account.deposit(winnings);
